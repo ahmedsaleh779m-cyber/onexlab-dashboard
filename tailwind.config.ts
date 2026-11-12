@@ -14,7 +14,9 @@ const config: Config = {
           bg: "#000000",
           surface: "#0a0a0a",
           "surface-2": "#141414",
+          "surface-3": "#1c1c1c",
           border: "#1f1f1f",
+          "border-2": "#2a2a2a",
         },
         gold: {
           DEFAULT: "#d4af37",
@@ -24,6 +26,7 @@ const config: Config = {
         text: {
           DEFAULT: "#e5e5e5",
           muted: "#737373",
+          dim: "#404040",
         },
         success: "#10b981",
         danger: "#ef4444",

@@ -69,13 +69,62 @@ export interface LiveGame {
   device_guid: string;
   grid: number[][];
   action_step: number;
-  status: number;
+  status: number | string;
   bet_sum: number;
   chosen_columns: number[];
   session_id?: string | null;
   forced_outcome?: string | null;
 }
 
+export interface LiveResponse {
+  active: LiveGame[];
+  count: number;
+  balance?: number;
+}
+
+export interface DevicesResponse {
+  devices: Device[];
+  count: number;
+}
+
+export interface DeviceDetailResponse {
+  device: Device;
+  sessions: Session[];
+}
+
+export interface SessionsResponse {
+  sessions: Session[];
+  count: number;
+}
+
+export interface PaymentNumbers {
+  VodafoneCash?: string;
+  EtisalatCash?: string;
+  OrangeCash?: string;
+  WEPay?: string;
+  InstaPay?: string;
+  [key: string]: string | undefined;
+}
+
+export interface PaymentNumbersResponse {
+  payment_numbers: PaymentNumbers;
+}
+
 export interface ConfigMap {
+  difficulty_profile?: string;
+  win_rate?: number;
+  auto_cashout_after?: number;
+  min_bet?: number;
+  max_bet?: number;
+  virtual_balance?: number;
+  payment_numbers?: PaymentNumbers;
+  grid_override_enabled?: boolean;
+  grid_override_json?: number[][];
+  maintenance_mode?: boolean;
+  active?: boolean;
   [key: string]: unknown;
+}
+
+export interface ConfigResponse {
+  config: ConfigMap;
 }
