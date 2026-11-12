@@ -4,7 +4,7 @@ import { cn } from "@/lib/utils";
 
 interface StatCardProps {
   label: string;
-  value: string | number;
+  value: React.ReactNode;
   hint?: string;
   icon?: LucideIcon;
   accent?: "gold" | "success" | "danger" | "warning";

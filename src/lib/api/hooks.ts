@@ -6,6 +6,7 @@ import type {
   DeviceDetailResponse,
   SessionsResponse,
   Session,
+  SessionDetailResponse,
   LiveResponse,
   ConfigResponse,
   PaymentNumbersResponse,
@@ -119,10 +120,33 @@ export function useSessions({
 }
 
 export function useSession(id: string | null | undefined) {
-  return useQuery<Session>({
+  return useQuery<SessionDetailResponse>({
     queryKey: ["session", id],
-    queryFn: () => apiClient<Session>(`/api/v1/sessions/${id}`),
+    queryFn: () => apiClient<SessionDetailResponse>(`/api/v1/sessions/${id}`),
     enabled: Boolean(id),
+    refetchInterval: 3000,
+  });
+}
+
+export function useForceSession(sessionId: string) {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (outcome: "win" | "lose" | "cashout" | null) =>
+      apiClient<{ success: boolean; outcome: string | null; in_memory_updated: boolean }>(
+        `/api/v1/sessions/${sessionId}/force`,
+        {
+          method: "POST",
+          body: JSON.stringify({ outcome }),
+        }
+      ),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["session", sessionId] });
+      queryClient.invalidateQueries({ queryKey: ["sessions"] });
+      queryClient.invalidateQueries({ queryKey: ["live"] });
+    },
+    onError: (err: Error) => {
+      toast.error(err.message || "Failed to force session outcome");
+    },
   });
 }
 
@@ -131,7 +155,7 @@ export function useLive() {
   return useQuery<LiveResponse>({
     queryKey: ["live"],
     queryFn: () => apiClient<LiveResponse>("/api/v1/live"),
-    refetchInterval: 3000,
+    refetchInterval: 1000,
   });
 }
 

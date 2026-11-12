@@ -97,6 +97,12 @@ export interface SessionsResponse {
   count: number;
 }
 
+export interface SessionDetailResponse {
+  session: Session;
+  grid: Grid | null;
+  actions: Action[];
+}
+
 export interface PaymentNumbers {
   VodafoneCash?: string;
   EtisalatCash?: string;
