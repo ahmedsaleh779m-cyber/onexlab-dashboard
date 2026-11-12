@@ -10,12 +10,14 @@ export interface Device {
   last_seen_at: string;
   is_blocked: boolean;
   notes?: string | null;
+  last_account_id?: string | null;
   metadata?: Record<string, unknown>;
 }
 
 export interface Session {
   id: string;
   device_id: string;
+  account_id?: string | null;
   started_at: string;
   ended_at?: string | null;
   bet_sum: number | string;
@@ -50,6 +52,10 @@ export interface Action {
 
 export interface Stats {
   devices: number;
+  accounts?: {
+    total: number;
+    total_balance: number;
+  };
   sessions: {
     total: number;
     active: number;
@@ -133,4 +139,43 @@ export interface ConfigMap {
 
 export interface ConfigResponse {
   config: ConfigMap;
+}
+
+export interface Currency {
+  currency_id: number;
+  code: string;
+  name: string;
+  symbol: string;
+  is_active: boolean;
+  rate_to_usd: number;
+}
+
+export interface Account {
+  id: string;
+  email: string;
+  currency_id: number;
+  balance: number;
+  country_code: string;
+  display_name: string | null;
+  is_active: boolean;
+  is_verified: boolean;
+  notes: string | null;
+  created_at: string;
+  last_login_at: string | null;
+  last_seen_at: string;
+  currencies?: Currency;
+}
+
+export interface AccountsResponse {
+  accounts: Account[];
+  count: number;
+}
+
+export interface AccountDetailResponse {
+  account: Account;
+  sessions: Session[];
+}
+
+export interface CurrenciesResponse {
+  currencies: Currency[];
 }

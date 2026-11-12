@@ -11,6 +11,7 @@ import {
   Activity,
   ArrowRight,
   Radio,
+  Users,
 } from "lucide-react";
 import {
   ResponsiveContainer,
@@ -75,8 +76,16 @@ export default function OverviewPage() {
         subtitle="System status and real-time operations"
       />
 
-      {/* 4 Stat Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+      {/* Stat Cards */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
+        <StatCard
+          label="Accounts"
+          value={formatNumber(stats?.accounts?.total ?? 0)}
+          hint={`${formatCurrency(stats?.accounts?.total_balance ?? 0)} bal`}
+          icon={Users}
+          accent="gold"
+          loading={statsLoading}
+        />
         <StatCard
           label="Devices"
           value={formatNumber(stats?.devices ?? 0)}

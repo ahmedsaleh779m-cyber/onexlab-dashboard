@@ -11,6 +11,10 @@ import type {
   ConfigResponse,
   PaymentNumbersResponse,
   PaymentNumbers,
+  AccountsResponse,
+  AccountDetailResponse,
+  CurrenciesResponse,
+  Account,
 } from "@/lib/api/types";
 import { toast } from "sonner";
 
@@ -210,5 +214,74 @@ export function useUpdatePaymentNumbers() {
     onError: (err: Error) => {
       toast.error(err.message || "Failed to update payment numbers");
     },
+  });
+}
+
+// ─── Accounts Hooks (Phase 2C) ─────────────────────────────────────────
+export function useAccounts(limit = 100, offset = 0) {
+  return useQuery<AccountsResponse>({
+    queryKey: ["accounts", limit, offset],
+    queryFn: () =>
+      apiClient<AccountsResponse>(`/api/v1/accounts?limit=${limit}&offset=${offset}`),
+    refetchInterval: 10000,
+  });
+}
+
+export function useAccount(id: string | null | undefined) {
+  return useQuery<AccountDetailResponse>({
+    queryKey: ["account", id],
+    queryFn: () => apiClient<AccountDetailResponse>(`/api/v1/accounts/${id}`),
+    enabled: Boolean(id),
+  });
+}
+
+export function useUpdateAccount(id: string) {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (data: { display_name?: string | null; notes?: string | null; is_active?: boolean }) =>
+      apiClient<{ success: boolean; updated: unknown }>(`/api/v1/accounts/${id}`, {
+        method: "PATCH",
+        body: JSON.stringify(data),
+      }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["account", id] });
+      queryClient.invalidateQueries({ queryKey: ["accounts"] });
+      queryClient.invalidateQueries({ queryKey: ["stats"] });
+      toast.success("Account updated successfully");
+    },
+    onError: (err: Error) => {
+      toast.error(err.message || "Failed to update account");
+    },
+  });
+}
+
+export function useSetAccountBalance(id: string) {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (balance: number) =>
+      apiClient<{ success: boolean; account_id: string; new_balance: number }>(
+        `/api/v1/accounts/${id}/balance`,
+        {
+          method: "POST",
+          body: JSON.stringify({ balance }),
+        }
+      ),
+    onSuccess: (data) => {
+      queryClient.invalidateQueries({ queryKey: ["account", id] });
+      queryClient.invalidateQueries({ queryKey: ["accounts"] });
+      queryClient.invalidateQueries({ queryKey: ["stats"] });
+      toast.success(`Balance updated to ${data.new_balance}`);
+    },
+    onError: (err: Error) => {
+      toast.error(err.message || "Failed to update balance");
+    },
+  });
+}
+
+export function useCurrencies() {
+  return useQuery<CurrenciesResponse>({
+    queryKey: ["currencies"],
+    queryFn: () => apiClient<CurrenciesResponse>("/api/v1/currencies"),
+    staleTime: 60000,
   });
 }

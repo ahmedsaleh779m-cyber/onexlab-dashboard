@@ -14,6 +14,7 @@ import {
   RotateCcw,
   Save,
   CheckCircle2,
+  Users,
 } from "lucide-react";
 import { PageHeader } from "@/components/layout/page-header";
 import { StatCard } from "@/components/ui/stat-card";
@@ -299,6 +300,28 @@ export default function DeviceDetailPage() {
               </dd>
             </div>
           </dl>
+
+          {device.last_account_id && (
+            <div className="mt-4 pt-4 border-t border-white/[0.06] flex items-center justify-between p-3 rounded-lg bg-gold/5 border border-gold/20">
+              <div className="flex items-center gap-2.5">
+                <Users className="w-4 h-4 text-gold" />
+                <div>
+                  <span className="text-[10px] uppercase font-mono tracking-wider text-text-muted block">
+                    Linked Account
+                  </span>
+                  <span className="text-xs font-mono text-gold font-medium">
+                    {device.last_account_id}
+                  </span>
+                </div>
+              </div>
+              <Link
+                href={`/accounts/${device.last_account_id}`}
+                className="px-2.5 py-1 text-xs font-mono bg-gold/15 text-gold hover:bg-gold/25 border border-gold/30 rounded transition-colors"
+              >
+                View →
+              </Link>
+            </div>
+          )}
         </div>
 
         {/* Device Actions */}
